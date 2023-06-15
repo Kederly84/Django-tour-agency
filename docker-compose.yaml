@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:14.3
+    environment:
+      POSTGRES_DB: "tour_db"
+      POSTGRES_USER: "Kederly"
+      POSTGRES_PASSWORD: "develop_pwd"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U Kederly -d tour_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+    networks:
+      - postgres
+
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "user@mymail.com"
+      PGADMIN_DEFAULT_PASSWORD: "mypwd"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - postgres
+
+volumes:
+  tour_db-data:
+  pgadmin-data:
+
+networks:
+  postgres:
+    driver: bridge
