@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Added apps
+    'crispy_forms',
     'mainapp',
+    'authapp',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -68,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
             ],
         },
     },
@@ -115,6 +119,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.vk.VKOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -145,3 +154,23 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
+
+AUTH_USER_MODEL = 'authapp.TravelUser'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+SOCIAL_AUTH_VK_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_VK_OAUTH2_KEY')
+
+SOCIAL_AUTH_VK_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_VK_OAUTH2_SECRET')
+
+SOCIAL_AUTH_PIPELINE = ('social_core.pipeline.social_auth.social_details',
+                        'social_core.pipeline.social_auth.social_uid',
+                        'social_core.pipeline.social_auth.auth_allowed',
+                        'social_core.pipeline.social_auth.social_user',
+                        'social_core.pipeline.user.create_user',
+                        'authapp.pipeline.save_user_profile',
+                        'social_core.pipeline.social_auth.associate_user',
+                        'social_core.pipeline.social_auth.load_extra_data',
+                        'social_core.pipeline.user.user_details',)

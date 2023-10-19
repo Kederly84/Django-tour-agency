@@ -8,13 +8,13 @@ NULLABLE = {
 
 class BasModel(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='Создано')
-    updated = models.DateTimeField(auto_now_add=True, verbose_name='Обновлено')
+    updated = models.DateTimeField(auto_now=True, verbose_name='Обновлено')
     deleted = models.BooleanField(default=False, verbose_name='Удалено')
 
     class Meta:
         abstract = True
 
-    def delete(self, *args, **kwargs):
+    def delete(self, **kwargs):
         self.deleted = True
         self.save()
 
@@ -25,7 +25,7 @@ class ListOfCountries(BasModel):
     is_active = models.BooleanField(default=True, verbose_name='Активна')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
     class Meta:
         ordering = ['name', '-created']
@@ -40,7 +40,7 @@ class Regions(BasModel):
     is_active = models.BooleanField(default=True, verbose_name='Активна')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}'
 
     class Meta:
         ordering = ['name', '-created']
@@ -71,10 +71,3 @@ class Accommodation(BasModel):
 
     def __str__(self):
         return f'{self.name} ({self.country.name})'
-
-
-
-
-
-
-
