@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'mainapp',
     'authapp',
-    'social_django'
+    'social_django',
+    'adminapp',
 ]
 
 MIDDLEWARE = [
