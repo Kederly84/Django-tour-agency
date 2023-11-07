@@ -24,7 +24,7 @@ def register(request):
 
 
 def login(request):
-    title = 'Login'
+    title = 'login'
     login_form = TravelUserLoginForm(data=request.POST or None)
     next = request.GET['next'] if 'next' in request.GET.keys() else ''
     if request.method == 'POST' and login_form.is_valid():

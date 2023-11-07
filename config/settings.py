@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'authapp',
     'social_django',
     'adminapp',
+    'basketapp',
 ]
 
 MIDDLEWARE = [
@@ -157,6 +158,10 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTH_USER_MODEL = 'authapp.TravelUser'
+
+# LOGIN_REDIRECT_URL = 'main:main'
+
+LOGIN_URL = '/auth'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
