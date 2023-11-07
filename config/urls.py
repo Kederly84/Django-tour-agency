@@ -29,6 +29,7 @@ urlpatterns = [
     path('login/', RedirectView.as_view(url='/auth/login/')),
     path('', include('social_django.urls', namespace='social')),
     path('admin/', include('adminapp.urls', namespace='admin')),
+    path('basket/', include('basketapp.urls', namespace='basket')),
 ]
 
 if settings.DEBUG:

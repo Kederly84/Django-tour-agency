@@ -15,7 +15,7 @@
                         <h5 class="card-title">{{ offer.name|title }}</h5>
                         <p class="card-text">{{ offer.region|title }}</p>
                         <p class="card-text">{{ offer.price }} за сутки.</p>
-                        <a href="{% url 'acc:accommodation' offer.pk %}"
+                        <a href="{% url 'main:accommodation' offer.pk %}"
                            class="btn btn-danger">Подробнее</a>
                     </div>
                 </div>
