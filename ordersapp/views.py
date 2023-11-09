@@ -1,7 +1,10 @@
 from django.db import transaction
 from django.forms import inlineformset_factory
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 
 from basketapp.models import Basket
 from ordersapp.forms import OrderItemForm
@@ -37,7 +40,7 @@ class OrderItemsCreate(CreateView):
                 for num, form in enumerate(formset.forms):
                     form.initial['accommodation'] = basket_items[num].accommodation
                     form.initial['nights'] = basket_items[num].nights
-                    form.initial['price'] = basket_items[num].price
+                    form.initial['price'] = basket_items[num].accommodation.price
                 basket_items.delete()
             else:
                 formset = OrderFormSet()
@@ -51,7 +54,7 @@ class OrderItemsCreate(CreateView):
         with transaction.atomic():
             form.instance.user = self.request.user
             self.object = form.save()
-            if orderitems.is_vslid():
+            if orderitems.is_valid():
                 orderitems.instance = self.object
                 orderitems.save()
         if self.object.get_total_cost() == 0:
@@ -62,7 +65,7 @@ class OrderItemsCreate(CreateView):
 class OrderItemsUpdate(UpdateView):
     model = Order
     fields = []
-    success_url = reverse_lazy('order:order_list')
+    success_url = reverse_lazy('order:orders_list')
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
@@ -85,7 +88,7 @@ class OrderItemsUpdate(UpdateView):
         with transaction.atomic():
             form.instance.user = self.request.user
             self.object = form.save()
-            if orderitems.is_vslid():
+            if orderitems.is_valid():
                 orderitems.instance = self.object
                 orderitems.save()
         if self.object.get_total_cost() == 0:
@@ -100,3 +103,15 @@ class OrderRead(DetailView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'просмотр заказа'
         return context
+
+
+class OrderDelete(DeleteView):
+    model = Order
+    success_url = reverse_lazy('order:orders_list')
+
+
+def order_forming_complete(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    order.status = Order.SENT_TO_PROCEED
+    order.save()
+    return HttpResponseRedirect(reverse('order:orders_list'))
